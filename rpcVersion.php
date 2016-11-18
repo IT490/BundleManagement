@@ -16,14 +16,17 @@ $doVersion = function ($arr) {
   if ($results) {
     //login successful
     $msg = array();
-		var_dump($results);
     $msg['version'] = $results['version'];
-    var_dump($msg);
 		$data = serialize($msg);
 		return $data;
   }
   else {
-    return "No";
+    //if no result that means bundle has never been bundled before
+    //so, return 0 as version
+    $msg = array();
+    $msg['version'] = 0;
+    $data = serialize($msg);
+    return $data;
   }
    
 };
