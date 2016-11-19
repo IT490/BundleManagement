@@ -1,11 +1,11 @@
 {
   "Login" : [
-              "/var/www/demo/rpc/rpcLoginServer.php",
-              "/var/www/demo/classes/Controllers/loginController.class.php",
-              "/var/www/demo/classes/Views/loginView.class.php"
+      { "/var/www/demo/rpc/" : "rpcLoginServer.php" },
+      { "/var/www/demo/classes/Controllers/" : "loginController.class.php" },
+      { "/var/www/demo/classes/Views/" : "loginView.class.php" }
             ],
   "Logger" :[
-              "/var/www/demo/rpc/rpcInfoLogger.php",
-              "/var/www/demo/rpc/rpcErrorLogger.php"
+      { "/var/www/demo/rpc/" : "rpcInfoLogger.php" },
+      { "/var/www/demo/rpc/" : "rpcErrorLogger.php" }
             ]
 }
