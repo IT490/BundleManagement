@@ -14,20 +14,37 @@
   $replies = $client->getReplies();
   echo "Requesting current version from Deployment server...\n";
 	$data = unserialize($replies["doVersion"]);
+
 	//handle latest version - create new version number
   $currentVersionNumber = $data['version']+ 1;
   echo "Creating a new bundle version...\n";
-  //read config and save paths
+
+  //create tmp folder to place files in
   exec('mkdir tmp');
+	
+	//read config.ini to get files to place in folder
   $str = file_get_contents('config.json');
   $json = json_decode($str, true);
   foreach ($json[$argv[1]] as $elem){
     exec('cp ' . $elem . ' ~/bundleMgmt/tmp/');
   }
-  //create new bundle
+
+  //tarzip tmp folder
   echo "Bundling all components of " . $argv[1] . "...\n";
+	exec('tar -czvf' .$argv[1] . 'Bundle.tar.gz ~/bundleMgmt/');
+	//request to deployment to pull tarzip folder
+	$deployRequest = array();
+	$deployRequest['name'] = $argv[1];
+	
+	//sending location of tar to deployment
+	$deployRequest['location'] = __DIR__ . $argv[1] . 'Bundle.tar.gz';
 
-
-	//request to deployment to pull new bundle
+	//now, actually send
+	$deployClient = new Thumper\RpcClient($registry->getConnection());
+	$client->initClient();
+	$client->addRequest(serialize($deployRequest), 'doBundle', 'doBundle');
 
 	//consume success message
+	$replies = $client->getReplies();
+	$msg = $unserialize($replies['version']);
+	echo $msg;
