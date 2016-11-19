@@ -15,17 +15,21 @@ $doVersion = function ($arr) {
   }
   if ($results) {
     //login successful
+    echo "Looking up current version...\n";
     $msg = array();
     $msg['version'] = $results['version'];
-		$data = serialize($msg);
+    $data = serialize($msg);
+    echo "Current version returned.\n";
 		return $data;
   }
   else {
     //if no result that means bundle has never been bundled before
     //so, return 0 as version
+    echo "Looking up current version...\n";
     $msg = array();
     $msg['version'] = 0;
     $data = serialize($msg);
+    echo "No current version exists.\n";
     return $data;
   }
    
