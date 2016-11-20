@@ -5,12 +5,13 @@ require __DIR__ .'/dbConn.class.php';
 
 $doBundle = function ($arr) {
   try {
-    $data = unserialize($arr);
+	  $data = unserialize($arr);
     $db = dbConn::getConnection();
     $sql = $db->prepare('UPDATE Bundles SET Latest=FALSE WHERE Latest=TRUE AND name = :name');
-		$sql = $db->prepare('SELECT * FROM Bundles WHERE name = :name AND Latest = TRUE');
-    $sql->execute( array( ':name' => $data['name'] ) );
-    $results = $sql->fetch();
+		$sql->execute( array( ':Latest' => $data['Latest'] ) );
+		$sql = $db->prepare('INSERT INTO Bundles (name, version, Latest) VALUES (:name, :version, TRUE');
+		$sql->execute( array( ':name' => $data['name']);
+		$results = $sql->fetch();
   } catch ( PDOException $e ){
     echo $e->getMessage();
   }
@@ -18,9 +19,9 @@ $doBundle = function ($arr) {
     //login successful
 		echo "Checking to see if I have the latest version";
     $msg = array();
-		var_dump($results);
+		//var_dump($results);
     $msg['version']=['version'];
-    var_dump($msg);
+   	// var_dump($msg);
 		$data = serialize($msg);
 		echo "Congrats, you have bundled successfully";
 		return $data;
