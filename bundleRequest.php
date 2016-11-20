@@ -29,6 +29,9 @@
     exec('cp ' . $elem . ' ~/bundleMgmt/tmp/');
   }
 
+	//copy config into folder
+	exec('cp config.json ~/bundleMgmt/tmp/');
+
   //tarzip tmp folder
   echo "Bundling all components of " . $argv[1] . "...\n";
 	exec('tar -czvf' .$argv[1] . 'Bundle.tar.gz ~/bundleMgmt/');
