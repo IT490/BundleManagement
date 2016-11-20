@@ -34,13 +34,15 @@
 
   //tarzip tmp folder
   echo "Bundling all components of " . $argv[1] . "...\n";
-	exec('tar -czvf' .$argv[1] . 'Bundle.tar.gz ~/bundleMgmt/');
+  $filename = $argv[1] . '_Version' . $currentVersionNumber . '_Bundle.tar.gz';
+	exec('tar -czvf ' . $filename. ' ~/bundleMgmt/');
 	//request to deployment to pull tarzip folder
 	$deployRequest = array();
-	$deployRequest['name'] = $argv[1];
-	
+  $deployRequest['name'] = $argv[1];
+  $deployRequest['version'] = $currentVersionNumber;
+	$deployRequest['filename'] = $filename;
 	//sending location of tar to deployment
-	$deployRequest['location'] = __DIR__ . $argv[1] . 'Bundle.tar.gz';
+	$deployRequest['location'] = __DIR__ . '/' . $argv[1] . 'Bundle.tar.gz';
 
 	//now, actually send
 	$deployClient = new Thumper\RpcClient($registry->getConnection());
@@ -49,5 +51,5 @@
 
 	//consume success message
 	$replies = $client->getReplies();
-	$msg = $unserialize($replies['version']);
+	$msg = $unserialize($replies['doBundle']);
 	echo $msg;

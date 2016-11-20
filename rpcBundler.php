@@ -8,28 +8,21 @@ $doBundle = function ($arr) {
 	  $data = unserialize($arr);
     $db = dbConn::getConnection();
     $sql = $db->prepare('UPDATE Bundles SET Latest=FALSE WHERE Latest=TRUE AND name = :name');
-		$sql->execute( array( ':Latest' => $data['Latest'] ) );
-		$sql = $db->prepare('INSERT INTO Bundles (name, version, Latest) VALUES (:name, :version, TRUE');
-		$sql->execute( array( ':name' => $data['name']);
-		$results = $sql->fetch();
+		$sql->execute( array( ':name' => $data['name'] ) );
+		$sql = $db->prepare('INSERT INTO Bundles VALUES (:name, :version, TRUE');
+		$sql->execute( array( ':name' => $data['name'], ':version' => $data['version']);
   } catch ( PDOException $e ){
     echo $e->getMessage();
   }
-  if ($results) {
-    //login successful
-		echo "Checking to see if I have the latest version";
-    $msg = array();
-		//var_dump($results);
-    $msg['version']=['version'];
-   	// var_dump($msg);
-		$data = serialize($msg);
-		echo "Congrats, you have bundled successfully";
-		return $data;
-  }
-  else {
-    return "No";
-  }
-   
+	
+  echo "Copying the latest version of " . $data['name'] . " to Deployment server...\n";  
+  //do scp to get latest bundle and save to ~/Bundles/
+  exec('scp -P 11222 yuval@10.0.2.2:' . $data['location'] . $data['filename'] . ' /home/yuval/Bundles/');
+  echo "Successfully copied new bundle...\n";
+  $msg = array();
+  $msg['success'] = "Bundle operation completed successfully";
+	$data = serialize($msg);
+	return $data;
 };
 
 $server = new Thumper\RpcServer($registry->getConnection());
@@ -37,5 +30,3 @@ $server->initServer('doBundle');
 $server->setCallback($doBundle);
 $server->start();
 
-//Assuming RSA keys are installed on each server (grab from dev server)
-//exec('scp -P 11000 jason@hostadress:/home/jason/BundleMgmt/bundleRequest.php');
