@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/config.php';
+require __DIR__ . '/../config.php';
 require __DIR__ .'/dbConn.class.php';
 
 $doReturnVersions = function ($arr) {
