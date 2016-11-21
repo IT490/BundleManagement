@@ -35,7 +35,7 @@
   //tarzip tmp folder
   echo "Bundling all components of " . $argv[1] . "...\n";
   $filename = $argv[1] . '_Version' . $currentVersionNumber . '_Bundle.tar.gz';
-	exec('tar -czvf ' . $filename. ' ~/bundleMgmt/');
+	exec('tar -czvf ' . $filename. ' ~/bundleMgmt/tmp/');
 	//request to deployment to pull tarzip folder
 	$deployRequest = array();
   $deployRequest['name'] = $argv[1];
