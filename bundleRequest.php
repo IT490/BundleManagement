@@ -52,4 +52,4 @@
 	//consume success message
 	$replies = $client->getReplies();
 	$msg = $unserialize($replies['doBundle']);
-	echo $msg;
+	echo $msg['success'];
