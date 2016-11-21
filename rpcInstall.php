@@ -1,41 +1,26 @@
 <?php
+//This rpc server sits on Production and handles the Installation of bundles
 
 require __DIR__ . '/config.php';
-require __DIR__ .'/dbConn.class.php';
 
-$doVersion = function ($arr) {
-  try {
-    $data = unserialize($arr);
-    $db = dbConn::getConnection();
-    $sql = $db->prepare('SELECT * FROM Bundles WHERE name = :name AND Latest = TRUE');
-    $sql->execute( array( ':name' => $data['name'] ) );
-    $results = $sql->fetch();
-  } catch ( PDOException $e ){
-    echo $e->getMessage();
+$doInstall = function ($arr) {
+  //Message received that bundle was copied over.
+  //Take bundle from ~/Bundles/ unpack it and move everything where it has to go
+  $data = unserialize($arr);
+  exec('cd ~/Bundles/');
+  exec('tar xvfz ' . $data['filename']);
+  exec('cd tmp/');
+
+  $str = file_get_contents('config.json');
+  $json = json_decode($str, true);
+
+  foreach($json[$data['name']] as $key => $value){
+    exec('echo nugget | sudo -S cp ' . $value . ' ' . $key . $value);
   }
-  if ($results) {
-    //login successful
-    echo "Looking up current version...\n";
-    $msg = array();
-    $msg['version'] = $results['version'];
-    $data = serialize($msg);
-    echo "Current version returned.\n";
-		return $data;
-  }
-  else {
-    //if no result that means bundle has never been bundled before
-    //so, return 0 as version
-    echo "Looking up current version...\n";
-    $msg = array();
-    $msg['version'] = 0;
-    $data = serialize($msg);
-    echo "No current version exists.\n";
-    return $data;
-  }
-   
+    
 };
 
 $server = new Thumper\RpcServer($registry->getConnection());
-$server->initServer('doVersion');
-$server->setCallback($doVersion);
+$server->initServer('doInstall');
+$server->setCallback($doInstall);
 $server->start();
