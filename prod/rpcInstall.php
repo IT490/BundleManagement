@@ -17,6 +17,11 @@ $doInstall = function ($arr) {
   foreach($json[$data['name']] as $key => $value){
     exec('echo nugget | sudo -S cp ' . $value . ' ' . $key . $value);
   }
+
+  $response = array();
+  $response['message'] = "Successfuly installed bundle.";
+
+  return serialize($response);
     
 };
 

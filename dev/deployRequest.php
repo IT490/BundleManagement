@@ -16,7 +16,7 @@
 
   if ( $data['message'] ) 
     echo $data['message'];
-  
+  // ***need to format the versions table nicer*** 
   else { 
     echo "Component   |    Version   |   Latest\n";
     echo "-------------------------------------\n";
@@ -33,7 +33,8 @@
     fclose($handle);
 
     $request['version'] = $version;
-    
+    $request['filename'] = $argv[1] . '_Version' . $version . ' _Bundle.tar.gz';
+    $request['location'] = $argv[2];
     //Build msg to deployment with version to deploy
 	  $client = new Thumper\RpcClient($registry->getConnection());
 	  $client->initClient();
@@ -44,8 +45,10 @@
     echo "Requesting deployment of " . $argv[1] . " version " . $version . "...\n";
     $data = unserialize($replies['doDeploy']);
 
-    if ($data['status'] == "Success")
+    if ($data['message']){
       echo "Deployment was successful...\n";
+      echo $data['message'];
+    }
     else
       echo "Deployment failed...\n";
   }
